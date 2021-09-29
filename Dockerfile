@@ -1,8 +1,8 @@
-FROM golang:1.14.4-alpine3.11 as builder
+FROM golang:1.17.1-alpine3.14 as builder
 
 RUN apk add --update ca-certificates git
 
-ENV SRC github.com/segmentio/segment-proxy
+ENV SRC github.com/noho-digital/segment-proxy
 ENV CGO_ENABLED=0
 ENV GO111MODULE=on
 ENV GOOS=linux
@@ -13,7 +13,7 @@ ARG VERSION
 COPY . /go/src/${SRC}
 WORKDIR /go/src/${SRC}
 
-RUn go build -a -installsuffix cgo -ldflags "-w -s -extldflags '-static' -X main.version=$VERSION" -o /proxy
+RUN go build -a -installsuffix cgo -ldflags "-w -s -extldflags '-static' -X main.version=$VERSION" -o /proxy
 
 FROM scratch
 
