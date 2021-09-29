@@ -40,7 +40,7 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 			fallthrough
 		case strings.HasPrefix(req.URL.String(), "/analytics.js/v1"):
 			fallthrough
-		case strings.HasPrefix(req.URL.String(), "analytics-next/bundles"):
+		case strings.HasPrefix(req.URL.String(), "/analytics-next/bundles"):
 			target = cdn
 		default:
 			target = trackingAPI
