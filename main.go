@@ -34,11 +34,14 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		// Figure out which server to redirect to based on the incoming request.
 		// https://segment-cdn.dayforward.com/analytics-next/bundles/130.bundle.9457873b007a93e16765.js
 		// https://segment-cdn.dayforward.com/analytics-next/bundles/ajs-destination.bundle.c473a3426ccbc3cdfba0.js
+		// https://prod-segment-cdn.dayforward.com/next-integrations/integrations/facebook-pixel/2.11.4/facebook-pixel.dynamic.js.gz
 		var target *url.URL
 		switch {
 		case strings.HasPrefix(req.URL.String(), "/v1/projects"):
 			fallthrough
 		case strings.HasPrefix(req.URL.String(), "/analytics.js/v1"):
+			fallthrough
+		case strings.HasPrefix(req.URL.String(), "/next-integrations"):
 			fallthrough
 		case strings.HasPrefix(req.URL.String(), "/analytics-next/bundles"):
 			target = cdn
@@ -59,6 +62,7 @@ func NewSegmentReverseProxy(cdn *url.URL, trackingAPI *url.URL) http.Handler {
 		// Set the host of the request to the host of of the destination URL.
 		// See http://blog.semanticart.com/blog/2013/11/11/a-proper-api-proxy-written-in-go/.
 		req.Host = req.URL.Host
+		log.Printf("redirecting to %s\n", req.URL.String())
 	}
 	return &httputil.ReverseProxy{Director: director}
 }
